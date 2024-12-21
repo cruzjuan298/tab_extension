@@ -1,0 +1,25 @@
+{
+    "manifest_version": 3,
+    "name": "Linkin",
+    "version": "1.0",
+    "description": "Edit and save a browser session.",
+    "background":{
+        "service_worker": "service_worker.js"
+    },
+    "action": {
+        "default_popup" : "main.html",
+        "default_title" : "Tabs Manager"
+    },
+
+    "permissions" : [
+        "activeTab",
+        "storage",
+        "tabs",
+        "windows"
+      ],
+
+      "host_permissions": [
+        "https://*/*",
+        "http://*/*"
+      ]
+}

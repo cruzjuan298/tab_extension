@@ -1,0 +1,22 @@
+body{
+    margin: 20px;
+    padding: 0;
+    height: 100%;
+    width: 150px;
+}
+
+.ul-list{
+    margin: 0;
+    padding: 25px 0px 0px 25px;
+    font-size: 10px;
+}
+
+.li-list{
+    list-style: none;
+}
+
+a {
+    text-decoration: none;
+    color: inherit
+}
+
