@@ -20,3 +20,10 @@ a {
     color: inherit
 }
 
+button{
+    background-color: grey;
+    border: none;
+    border-radius: 10px;
+    margin: 2px;
+    cursor: pointer;
+}

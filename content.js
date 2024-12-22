@@ -5,7 +5,7 @@ const editButton = document.getElementById("edit-session-button");
 let editModeState = false;
 let windowCount = 0;
 let visibilityState;
-
+let displayState;
 getStoredWindows().forEach((session, index) => {
     const sessionElement = createHtmlList(session.urlsData, session.sessionId, index + 1);
     divContainer.insertBefore(sessionElement, null);
@@ -55,8 +55,9 @@ addButton.addEventListener("click", async () => {
 editButton.addEventListener("click", async () => {
     editModeState = !editModeState;
     visibilityState = editModeState ? "visible" : "hidden";
-    updateVisibilty(visibilityState,"delete-button");
-    updateVisibilty(visibilityState,"add-tab-button");
+    displayState = editModeState ? "block" : "none"
+    updateVisibilty(visibilityState, displayState, "delete-button");
+    updateVisibilty(visibilityState, displayState, "add-tab-button");
 })
 
 //Event Delegation used to target the delete button that is being clicked
@@ -94,6 +95,7 @@ function createHtmlList(urls, id, index){
     const deleteButton = document.createElement("button");
     deleteButton.classList.add("delete-button");
     deleteButton.style.visibility = "hidden";
+    deleteButton.style.display = "none";
     deleteButton.textContent = `Delete Session ${index}`;
     //console.log(windowNum)
     ulElement.appendChild(deleteButton);
@@ -102,6 +104,7 @@ function createHtmlList(urls, id, index){
     addTabButton.classList.add("add-tab-button");
     addTabButton.textContent = `Add Tab`;
     addTabButton.style.visibility = "hidden"; 
+    addTabButton.style.display = "none";
     ulElement.appendChild(addTabButton);
 
     urls.forEach(url => {
@@ -163,10 +166,11 @@ function updateWindows(){
 }
 
 //updates visibility of the delete buttons
-function updateVisibilty(visibility, className){
+function updateVisibilty(visibility, display, className){
     const buttons = document.getElementsByClassName(className);
     for (let i = 0; i < buttons.length; i++){
     buttons[i].style.visibility = visibility;
+    buttons[i].style.display = display;
     }
 }
 
