@@ -4,8 +4,9 @@ const editButton = document.getElementById("edit-session-button");
 
 let editModeState = false;
 let windowCount = 0;
-let visibilityState;
-let displayState;
+let visibilityState = "hidden";
+let displayState = "none";
+
 getStoredWindows().forEach((session, index) => {
     const sessionElement = createHtmlList(session.urlsData, session.sessionId, index + 1);
     divContainer.insertBefore(sessionElement, null);
@@ -58,6 +59,7 @@ editButton.addEventListener("click", async () => {
     displayState = editModeState ? "block" : "none"
     updateVisibilty(visibilityState, displayState, "delete-button");
     updateVisibilty(visibilityState, displayState, "add-tab-button");
+    updateVisibilty(visibilityState,displayState, "trash-image")
 })
 
 //Event Delegation used to target the delete button that is being clicked
@@ -74,6 +76,15 @@ divContainer.addEventListener("click", (event) => {
         console.log(sessionWindow);
         addCurrTab(sessionWindow);
     }
+    if (event.target.classList.contains("trash-image")) {
+        const trash = event.target;
+        const sessionWindow = parseInt(trash.closest(".ul-list").dataset.sessionId);
+        const urlLi = trash.closest(".li-list");
+        const url = trash.closest(".li-list").querySelector(".tab-name").href;
+        console.log(sessionWindow);
+        console.log(url);
+        deleteTab(sessionWindow, url, urlLi);
+    }
 })
 
 //Fetch Urls from the currect session
@@ -85,6 +96,32 @@ async function getUrls(){
         });
     });
 }
+
+function createTrashElement(visibility, display){
+    let imgElement = document.createElement("img");
+    imgElement.classList.add("trash-image")
+    imgElement.setAttribute('src', "trash.png")
+    imgElement.style.visibility = visibility;
+    imgElement.style.display = display;
+
+    return imgElement;
+}
+
+function createTabElement(url){
+    let aElement= document.createElement('a');
+    aElement.setAttribute('href', url);
+    aElement.setAttribute('target', '_blank');
+    aElement.textContent = new URL(url).hostname;
+    aElement.classList.add("tab-name")
+    return aElement;
+}
+
+function createLiElement(){
+    let liElement = document.createElement('li');
+    liElement.classList.add("li-list");
+
+    return liElement;
+}
 //Create the Html for the session
 function createHtmlList(urls, id, index){
     const ulElement = document.createElement("ul");
@@ -94,8 +131,8 @@ function createHtmlList(urls, id, index){
 
     const deleteButton = document.createElement("button");
     deleteButton.classList.add("delete-button");
-    deleteButton.style.visibility = "hidden";
-    deleteButton.style.display = "none";
+    deleteButton.style.visibility = visibilityState;
+    deleteButton.style.display = displayState;
     deleteButton.textContent = `Delete Session ${index}`;
     //console.log(windowNum)
     ulElement.appendChild(deleteButton);
@@ -103,21 +140,21 @@ function createHtmlList(urls, id, index){
     const addTabButton = document.createElement("button");
     addTabButton.classList.add("add-tab-button");
     addTabButton.textContent = `Add Tab`;
-    addTabButton.style.visibility = "hidden"; 
-    addTabButton.style.display = "none";
+    addTabButton.style.visibility = visibilityState; 
+    addTabButton.style.display = displayState;
     ulElement.appendChild(addTabButton);
 
     urls.forEach(url => {
-        let liElement = document.createElement('li');
-        liElement.classList.add("li-list");
+        let liElement = createLiElement();
 
-        let aElement= document.createElement('a');
-        aElement.setAttribute('href', url);
-        aElement.setAttribute('target', '_blank');
-        aElement.textContent = new URL(url).hostname;
+        let imageElement = createTrashElement(visibilityState, displayState);
+
+        let aElement = createTabElement(url);
 
         liElement.appendChild(aElement);
+        liElement.appendChild(imageElement);
         ulElement.appendChild(liElement);
+        
     })
 
     return ulElement
@@ -211,16 +248,36 @@ async function addCurrTab(sessionId){
     localStorage.setItem("window-session", JSON.stringify(totalStoredData))
 
     const ulElement = divContainer.querySelector(`[data-session-id="${sessionId}"]`);
-    let liElement = document.createElement('li');
-    liElement.classList.add("li-list");
+    let liElement = createLiElement();
 
-    let aElement = document.createElement('a');
-    aElement.setAttribute('href', currentTab);
-    aElement.setAttribute('target', '_blank');
-    aElement.textContent = new URL(currentTab).hostname;
+    let aElement = createTabElement(currentTab);
+    let imgElement = createTrashElement(visibilityState, displayState);
+
     liElement.appendChild(aElement);
+    liElement.appendChild(imgElement);
     ulElement.appendChild(liElement);
     
+}
+
+function deleteTabFromSession(sessions ,sessionId, removedUrl){
+    let session = sessions.find(session => session.sessionId === sessionId);
+
+    if (session) {
+        session.urlsData = session.urlsData.filter(url => url !== removedUrl);
+    }
+}
+
+function deleteTabHtml(li) {
+    li.remove();
+}
+
+function deleteTab(sessionId, url, urlHtml) {
+    const sessions = getStoredWindows();
+    deleteTabFromSession(sessions, sessionId, url)
+    console.log(sessions)
+
+    localStorage.setItem("window-session", JSON.stringify(sessions))
+    deleteTabHtml(urlHtml);
 }
 checkPlaceHolder()
 //currect bug where the window count isnt being retirved properly and its causing the sessions to be numbered incorrectly- no bug found as of 12/20/2024
