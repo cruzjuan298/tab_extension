@@ -85,6 +85,12 @@ divContainer.addEventListener("click", (event) => {
         console.log(url);
         deleteTab(sessionWindow, url, urlLi);
     }
+    if (event.target.classList.contains("ul-list")) {
+        const windowText = event.target;
+        const sessionsWindow = parseInt(windowText.closest(".ul-list").dataset.sessionId);
+        const urls = findUrls(sessionsWindow);
+        createNewWindow(urls)
+    }
 })
 
 //Fetch Urls from the currect session
@@ -279,5 +285,25 @@ function deleteTab(sessionId, url, urlHtml) {
     localStorage.setItem("window-session", JSON.stringify(sessions))
     deleteTabHtml(urlHtml);
 }
+
+function findUrls(sessionsId) {
+    const sessions = getStoredWindows();
+    const targetSession = sessions.find(session => session.sessionId === sessionsId)
+
+    return targetSession.urlsData
+}
+
+//opens a new window with all of the tabs saved in the session;
+function createNewWindow(urls){
+
+    chrome.windows.create({
+        focused: true,
+        url : urls,
+        type: "normal",
+        state: "maximized"
+    }
+    )
+}
+
 checkPlaceHolder()
 //currect bug where the window count isnt being retirved properly and its causing the sessions to be numbered incorrectly- no bug found as of 12/20/2024
