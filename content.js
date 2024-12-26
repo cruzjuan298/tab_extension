@@ -135,20 +135,25 @@ function createHtmlList(urls, id, index){
     ulElement.textContent = `Browser Session ${index}`;
     ulElement.dataset.sessionId = id;
 
+    const divButton = document.createElement("div");
+    divButton.classList.add("div-buttons")
+
     const deleteButton = document.createElement("button");
     deleteButton.classList.add("delete-button");
     deleteButton.style.visibility = visibilityState;
     deleteButton.style.display = displayState;
     deleteButton.textContent = `Delete Session ${index}`;
     //console.log(windowNum)
-    ulElement.appendChild(deleteButton);
 
     const addTabButton = document.createElement("button");
     addTabButton.classList.add("add-tab-button");
     addTabButton.textContent = `Add Tab`;
     addTabButton.style.visibility = visibilityState; 
     addTabButton.style.display = displayState;
-    ulElement.appendChild(addTabButton);
+
+    divButton.appendChild(addTabButton);
+    divButton.appendChild(deleteButton);
+    ulElement.appendChild(divButton);
 
     urls.forEach(url => {
         let liElement = createLiElement();
