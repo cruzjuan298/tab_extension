@@ -311,4 +311,3 @@ function createNewWindow(urls){
 }
 
 checkPlaceHolder()
-//currect bug where the window count isnt being retirved properly and its causing the sessions to be numbered incorrectly- no bug found as of 12/20/2024
