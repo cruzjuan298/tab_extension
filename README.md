@@ -17,7 +17,7 @@ Saving browser sessions is useful when mutiple tabs are open but you may want to
 Key Features Include:
 - Adding and Deleting sessions
 - Reduced Computer Lagging
-- Opening saved browser sessions (working on it )
+- Opening saved browser sessions 
 
 ## Technologies Used
 
